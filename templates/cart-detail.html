@@ -1,0 +1,40 @@
+{% extends "index.html" %}
+{% load static %}
+{% block title %}
+    Favorite
+{% endblock %}
+{% block content %}
+    <h1>Избранное</h1>
+    <table class="cart" style="width: 100%;">
+        <thead >
+        <div style="display:flex;justify-content:space-around;width:100%;cursor:pointer;text-align:center;">
+            <p>Картинка</p>
+            <p>Заголовок</p>
+            <p>Время создания</p>
+             <p></p>
+
+        </div>
+        </thead>
+        <tbody>
+        {% for item in cart %}
+                <div style="display:flex;justify-content:space-around;width:100%;cursor:pointer;text-align:center;">
+                    <p>
+                            <img style="width:60px;height:60px" src="{{ item.image }}">
+                        </a>
+                    </p>
+                    <p>{{ item.title }}</p>
+                    <p>{{ item.create_time }}</p>
+                    <p><a style="color: red;" href="{% url 'cart_remove' item.resume.id %}">Remove</a></p>
+                </div>
+        {% endfor %}
+        <tr class="total">
+            <td colspan="4"></td>
+<!--            <td><a style="color: red;" href="{% url 'cart-clear' %}">Очистить список</a></td>-->
+        </tr>
+        </tbody>
+    </table>
+    <p class="text-right">
+        <a href="{% url 'home' %}" class="button light">Continue</a>
+        <a href="#" class="button">Checkout</a>
+    </p>
+{% endblock %}

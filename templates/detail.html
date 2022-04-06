@@ -1,0 +1,221 @@
+{% extends 'index.html' %}
+
+{% load static %}
+
+{% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+</style>
+   <!--? Blog Area Start -->
+   <section class="blog_area single-post-area section-padding">
+     <div class="container">
+      <div class="row">
+       <div class="col-lg-8 posts-list">
+        <div class="single-post">
+         <div class="feature-img">
+          <img class="img-fluid" src="{{ resume.image.url }}" alt="">
+        </div>
+        <div class="blog_details">
+          <h2 style="color: #2d2d2d;">{{ resume.title }}
+         </h2>
+         <ul class="blog-info-link mt-3 mb-4">
+           <li><a href="#"><i class="fa fa-user"></i> {{resume.user_id}}</a></li>
+           <li><a href="#"><i class="fa fa-clock"></i>{{resume.create_time}}</a></li>
+         </ul>
+         <p class="excert">
+             {{resume.description}}
+         </p>
+            <p> Цена: {{resume.price}}c</p>
+            <p>Адрес: {{resume.address}}</p>
+            <p>{{ resume.id }}</p>
+            <p>{{resume.phone}} - {{resume.name}}</p>
+            <form action="{% url 'cart_add' resume.id %}" method="post" >
+                {{ cart_product_form }}
+                {% csrf_token %}
+                <input type="submit" class="btn btn-danger" value="В избранное">
+            </form>
+
+     </div>
+   </div>
+   <div class="navigation-top">
+     <div class="d-sm-flex justify-content-between text-center">
+      <!-- <p class="like-info"><span class="align-middle"><i class="fa fa-heart"></i></span> Нравится(10)</p> -->
+      <div class="col-sm-4 text-center my-2 my-sm-0">
+      </div>
+
+   </div>
+
+</div>
+
+<div class="comments-area">
+ <h4>Комментариев({{resume.resumes.all.count}})</h4>
+    {{ resumes.errors }}
+    {% for rev in resume.resumes.all %}
+    {% if rev.text != '***Сообщение удалено***' %}
+             <div class="comment-list">
+              <div class="single-comment justify-content-between d-flex">
+               <div class="user justify-content-between d-flex">
+                <div class="thumb">
+                 <img src="assets/img/blog/comment_1.png" alt="">
+               </div>
+               <div class="desc">
+
+
+                    <p class="comment">
+                   {{rev.text}}
+                     </p>
+
+                <div class="d-flex justify-content-between">
+                  <div class="d-flex align-items-center">
+
+            {% if rev.parent %}
+
+                       <h5>
+                    <a style="font-weight: 700; font-size: 18px;" href="#">{{rev.username}}: <span style="font-weight: 400;color: #69BEB5; font-size:16px;" >  @{{rev.parent.username}} </span></a>
+                  </h5>
+                      {% else %}
+                      <h5>
+                      <a style="font-weight: 700; font-size: 18px;"  href="#">{{rev.username}}</a>
+              </h5>
+            {% endif %}
+                  <p class="date">{{rev.create_time}}</p>
+                </div>
+                <div class="reply-btn">
+            <!--     <a style="color: #0c5460; font-weight: 600;" href="#" class="btn-reply text-uppercase">Ответить</a>-->
+                   {% if request.user == rev.username %} <a style="color: #0c5460; font-weight: 600;" href="{% url 'delete_comment' rev.pk %}" class="btn-reply text-uppercase">Удалить</a>{% endif %}
+               </div>
+             </div>
+            </div>
+            </div>
+            </div>
+            </div>
+    {% elif rev.text == '***Сообщение удалено***' and rev.replies.all %}
+                 <div class="comment-list">
+              <div class="single-comment justify-content-between d-flex">
+               <div class="user justify-content-between d-flex">
+                <div class="thumb">
+                 <img src="assets/img/blog/comment_1.png" alt="">
+               </div>
+               <div class="desc">
+
+
+                    <p class="comment">
+                   {{rev.text}}
+                     </p>
+
+                <div class="d-flex justify-content-between">
+                  <div class="d-flex align-items-center">
+
+            {% if rev.parent %}
+
+                       <h5>
+                    <a style="font-weight: 700; font-size: 18px;" href="#">{{rev.username}}: <span style="font-weight: 400;color: #69BEB5; font-size:16px;" >  @{{rev.parent.username}} </span></a>
+                  </h5>
+                      {% else %}
+                      <h5>
+                      <a style="font-weight: 700; font-size: 18px;"  href="#">{{rev.username}}</a>
+              </h5>
+            {% endif %}
+                  <p class="date">{{rev.create_time}}</p>
+                </div>
+                <div class="reply-btn">
+            <!--     <a style="color: #0c5460; font-weight: 600;" href="#" class="btn-reply text-uppercase">Ответить</a>-->
+                   {% if request.user == rev.username %} <a style="color: #0c5460; font-weight: 600;" href="{% url 'delete_comment' rev.pk %}" class="btn-reply text-uppercase">Удалить</a>{% endif %}
+               </div>
+             </div>
+            </div>
+            </div>
+            </div>
+            </div>
+    {% endif %}
+{% endfor %}
+
+
+
+</div>
+           {% if request.user.is_authenticated %}
+<div class="comment-form">
+ <h4>Вы: {{ request.user }}</h4>
+ <form class="form-contact comment_form" method="POST" action="{% url 'send_review' resume.id %}" id="commentForm" enctype="multipart/form-data">
+    {% csrf_token %}
+
+  <div class="row">
+   <div class="col-12">
+    <div class="form-group">
+
+     <textarea class="form-control w-100" name="text" id="comment" cols="30" rows="9"
+     placeholder="Написать комментарий"></textarea>
+   </div>
+ </div>
+</div>
+
+
+<div class="form-group">
+ <button type="submit" class="button button-contactForm btn_1 boxed-btn">Отправить</button>
+</div>
+</form>
+</div>
+           {% endif %}
+</div>
+<div class="col-lg-4">
+  <div class="blog_right_sidebar">
+    <aside class="single_sidebar_widget search_widget">
+
+
+      <form class="d-flex" method="get" action="{% url 'search' %}">
+          <div class="form-group">
+              <div class="input-group mb-3">
+                  <input name="q" type="search" class="form-control" placeholder='Search Keyword'
+                  onfocus="this.placeholder = ''"
+                  onblur="this.placeholder = 'Search Keyword'">
+                  <div class="input-group-append">
+                      <button class="btns" type="submit"><i class="ti-search"></i></button>
+                  </div>
+              </div>
+          </div>
+       
+      </form>
+
+
+  </aside>
+
+
+
+<aside class="single_sidebar_widget popular_post_widget">
+  <h3 class="widget_title" style="color: #2d2d2d;">Рекомендации</h3>
+
+    {% for i in recommendation %}
+
+  <div class="media post_item">
+      <a href="{% url 'resume' i.pk %}"><img style="width:60px;height:60px" src="{{ i.image.url }}" alt="post"></a>
+   <div class="media-body">
+    <a href="{% url 'resume' i.pk %}">
+     <h3 style="color: #2d2d2d;">{{i.title}}</h3>
+   </a>
+   <p>{{i.create_time}}</p>
+ </div>
+</div>
+{% endfor %}
+
+</aside>
+
+
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Blog Area End -->
+
+
+{% endblock %}

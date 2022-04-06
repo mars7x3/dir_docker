@@ -1,0 +1,15 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+<h1 style="color: red; background-color: black">Подтвердите удаление</h1>
+<form style="color: #fff;" method="post">
+
+    {% csrf_token %}
+
+    <button type="submit" class="btn btn-success">Да</button>
+    <a class="btn btn-danger" href="{% url 'profile' %}" role="button">Нет</a>
+
+
+</form>
+
+{% endblock %}

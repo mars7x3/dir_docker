@@ -1,0 +1,133 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block title %} DIR - Объявления {% endblock %}
+{% block content %}
+
+
+
+        <!-- Slider Area End -->
+        <!-- Hero Area End-->
+        <!--? Blog Area Start-->
+        <section class="blog_area section-padding">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mb-5 mb-lg-0 sidebar_top_first">
+                        <div class="blog_left_sidebar blog_content">
+
+
+
+                            {% for i in resumes %}
+                            <article class="blog_item">
+                                <div class="blog_item_img">
+                                    <a href="{% url 'resume' i.pk %}"><img class="card-img rounded-0" src="{{ i.image.url }}" alt="Здесь фото"></a>
+                                    <a href="{% url 'resume' i.pk %}" class="blog_item_date">
+                                        <h3>{{ i.price }}c</h3>
+                                    </a>
+                                </div>
+                                <form action="{% url 'cart_add' i.id %}" method="post" >
+                                    {{ cart_product_form }}
+                                    {% csrf_token %}
+                                    <div class="blog_button">
+                                        <button type="submit">В избранное</button>
+                                    </div>
+                                </form>
+                                <div class="blog_details">
+                                    <a class="d-inline-block" href="#">
+
+                                        <a href="{% url 'resume' i.pk %}"><h2 class="blog-head" style="color: #2d2d2d;">{{ i.title }}</h2></a>
+
+                                    </a>
+                                    <!-- <p>{{ i.description|truncatewords:15 }}</p> -->
+                                    <ul class="blog-info-link">
+                                        <li><a href="#"><i class="fa fa-user"></i> {{ i.name }}</a></li>
+                                        <li><a href="#"><i class="fa fa-clock"></i>{{ i.create_time }}</a></li>
+                                    </ul>
+                                </div>
+                            </article>
+
+                            {% endfor %}
+
+                           <nav class="blog-pagination justify-content-center d-flex">
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a href="{% url 'home' %}?page={{ page_obj.previous_page_number }}" class="page-link" aria-label="Previous">
+                                            <i class="ti-angle-left"></i>
+                                        </a>
+                                    </li>
+                                    {% endif %}
+
+                                    <li class="page-item active">
+                                        <a href="#" class="page-link">{{ page_obj.number }}</a>
+                                    </li>
+                                    {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a href="{% url 'home' %}?page={{ page_obj.next_page_number }}" class="page-link" aria-label="Next">
+                                            <i class="ti-angle-right"></i>
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 sidebar_top">
+                        <div class="blog_right_sidebar">
+                            <aside class="single_sidebar_widget search_widget">
+
+
+                                <form class="d-flex" method="get" action="{% url 'search' %}">
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <input name="q" type="search" class="form-control" placeholder='Search Keyword'
+                                            onfocus="this.placeholder = ''"
+                                            onblur="this.placeholder = 'Search Keyword'">
+                                            <div class="input-group-append">
+                                                <button class="btns" type="submit"><i class="ti-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 
+                                </form>
+
+
+                            </aside>
+                            <aside class="single_sidebar_widget post_category_widget">
+                                <h4 class="widget_title" style="color: #2d2d2d;">Категории</h4>
+                                <ul class="list cat-list">
+
+                                    <li>
+                                        <a href="{% url 'home' %}" class="d-flex">
+
+                                            <p>Все</p>
+                                            <p>({{ resume_count }})</p>
+                                        </a>
+                                    </li>
+
+                                    {% for cat in categories %}
+                                    <li>
+                                        <a href="{% url 'filter' cat.slug %}" class="d-flex">
+                                            <p>{{ cat.name }}</p>
+                                            <p>({{ cat.resume.all.count }})</p>
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+
+
+                                </ul>
+                            </aside>
+                     
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Blog Area End -->
+
+
+
+{% endblock %}
